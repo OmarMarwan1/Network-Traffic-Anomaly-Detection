@@ -34,7 +34,9 @@ The model was tuned for a balance of accuracy and memory footprint, making it su
 
 ## Dataset
 
-Trained on the [CIC-IDS-2017](https://www.unb.ca/cic/datasets/ids-2017.html) dataset, a widely used benchmark for network intrusion detection containing labeled benign and attack traffic captured over five days, including DoS, DDoS, brute-force, and port scan attacks.
+Trained on the [CIC-IDS-2017](https://www.unb.ca/cic/datasets/ids-2017.html) dataset, a widely used benchmark for network intrusion detection containing labeled benign and attack traffic captured over five days, including DoS, DDoS, brute-force, and port scan attacks. The full dataset contains roughly **2.5 million labeled flow records**.
+
+A **5,000-row sample** (`sample_traffic.csv`) of the original data is included in this repo so you can quickly test the model and `predict.py` without downloading the full 2.5M-row dataset.
 
 ## Performance
 
@@ -78,7 +80,30 @@ The most predictive features are almost entirely derived from **packet size stat
 
 This makes intuitive sense: many attack types (e.g., floods, brute-force tools) generate traffic with highly regular or unusually uniform packet sizes, whereas benign traffic shows more natural variability.
 
+## Repository Structure
+
+```
+├── network_anomaly.ipynb              # Training notebook (data prep, training, evaluation)
+├── network_traffic_anomaly_detection.pkl  # Trained Random Forest model
+├── predict.py                         # Script to run inference on new/sample data
+├── sample_traffic.csv                 # 5,000-row sample of the CIC-IDS-2017 dataset
+├── confusion_matrix.png
+├── feature_importance.png
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
+
 ## Usage
+
+### Quick start with the sample data
+
+```bash
+python predict.py
+```
+This runs the trained model against `sample_traffic.csv` (5,000 rows sampled from the original 2.5M-row dataset) and prints predictions out of the box — no need to download the full CIC-IDS-2017 dataset just to try the model.
+
+### Using the model directly
 
 ```python
 import pickle
@@ -99,11 +124,11 @@ probabilities = model.predict_proba(X)
 ## Requirements
 
 - Python 3.8+
-- scikit-learn
-- pandas / numpy
+- scikit-learn, pandas, numpy, scipy, matplotlib, seaborn, joblib
 
+Install everything with:
 ```bash
-pip install scikit-learn pandas numpy
+pip install -r requirements.txt
 ```
 
 > The model was serialized with a newer version of scikit-learn than some environments may have installed. If you see an `InconsistentVersionWarning` on load, consider matching your scikit-learn version to the one used for training, or re-serializing the model in your target environment.
@@ -116,4 +141,6 @@ pip install scikit-learn pandas numpy
 
 ## License
 
-MIT license.
+This project is licensed under the [MIT License](LICENSE) — free to use, modify, and distribute, including for commercial purposes, with attribution.
+
+Note: the MIT license covers the code and model in this repository. The underlying **CIC-IDS-2017 dataset** has its own usage terms set by the Canadian Institute for Cybersecurity — see the [dataset page](https://www.unb.ca/cic/datasets/ids-2017.html) for citation requirements if you use it in your own work.
