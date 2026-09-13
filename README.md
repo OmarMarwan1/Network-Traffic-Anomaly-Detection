@@ -116,4 +116,4 @@ pip install scikit-learn pandas numpy
 
 ## License
 
-Add your license of choice here.
+MIT license.
